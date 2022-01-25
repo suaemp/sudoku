@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% block title%}Play Sudoku{% endblock %}
+{% block content %}
+    {% set difficulties = ['EASY', 'MEDIUM', 'HARD', 'EXPERT', 'EVIL'] %}
+
+    {% if load_menu %}
+        <div class="menu-container">
+            <div class="logo-flex-container">
+                <div id="logo-container"></div>
+            </div>
+            <div class="menu">
+                <h1 class="action_title">SAVED GAMES</h1><br>
+                   <div>
+                    {% if saved_games %}
+                       <table>
+                          <tr>
+                            <th>BOARD SEED</th>
+                            <th>DATE</th>
+                            <th>TIME</th>
+                            <th>DIFFICULTY</th>
+                            <th>MISTAKES</th>
+                            <th>HINTS</th>
+                            <th></th>
+                          </tr>
+                    {% for saved_game in saved_games %}
+                        <form action="{{ url_for('load_saved_game', save_id=saved_game.id) }}" method="POST">
+                            <tr>
+                                <td>{{ saved_game['board_seed_id'] }}</td>
+                                <td>{{ saved_game['timestamp'] }}</td>
+                                <td>{{ saved_game['elapsed_time'] }}</td>
+                                <td>{{ saved_game['difficulty'] }}</td>
+                                <td>{{ saved_game['mistakes'] }}</td>
+                                <td>
+                                    {% if saved_game['hints'] %}
+                                        ON
+                                    {% else %}
+                                        OFF
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button type="submit" class="load-button">LOAD</button>
+                                </td>
+                            </tr>
+                        </form>
+                    {% endfor %}
+                    </table>
+                        {% else %}
+                        <h3>NO SAVED GAMES TO LOAD</h3>
+                        {% endif %}
+                    <div style="padding-top: 1rem">
+                    <a href="{{ url_for('main_menu') }}">
+                        <button type="button" class="menu-button">BACK TO MENU</button>
+                    </a><br><br><br><br></div>
+                </div>
+            </div>
+        </div>
+
+    {% elif not start_game %}
+        <script defer src="{{ url_for('static', filename='checkbox.js') }}"></script>
+        <div class="menu-container">
+            <div class="logo-flex-container">
+                <div id="logo-container"></div>
+            </div>
+            <div class="menu">
+                <form action="{{ url_for('start_new_game')}}" method="POST" style="padding-bottom: 1rem">
+                    <label for="difficulty" style="font-size: 1.5rem">DIFFICULTY </label>
+                    <select id="difficulty" name="difficulty" style="padding: 0.1rem; font-size: 1.5rem">
+                    {% for n in range(5)%}
+                        {% if n == 2 %}
+                            <option selected label="{{ difficulties[n] }}">
+                        {% else %}
+                            <option label="{{ difficulties[n] }}">
+                        {% endif %}
+                                {{ (n + 1) }}
+                            </option>
+                    {% endfor %}
+                    </select>
+                    <div class="tooltip">
+                        <label for="ranked" class="checkbox-label">
+                            <span class="tooltip-text-right">Hints are not allowed in ranked game</span>
+                            RANKED GAME
+                            <span style="padding-right: 0.75rem"></span>
+                            <input type="checkbox" class="checkbox" id="ranked" name="ranked">
+                        </label>
+                    </div>
+                    <label for="hints" class="checkbox-label">
+                        ENABLE HINTS
+                        <span style="padding-right: 1rem"></span>
+                        <input type="checkbox" class="checkbox" id="hints" name="hints">
+                    </label><br><br>
+                    <button type="submit" class="menu-button">START GAME</button>
+                </form>
+                <a href="{{ url_for('main_menu') }}">
+                    <button type="button" class="menu-button">BACK TO MENU</button>
+                </a>
+            </div>
+        </div>
+
+    {% else %}
+        <script>
+            let game_data = JSON.parse('{{ game_data | tojson }}');
+        </script>
+        <script defer src="{{ url_for('static', filename='game.js') }}"></script>
+        <div class="grid-container">
+        <div class="grid-item" style="display: flex; justify-content: flex-end; padding-right: 5rem"><div id="logo-container"></div></div>
+        <div class="grid-item" id="ui-text" style="padding: 0"><div class="board-title" id="">{{ difficulties[game_data['difficulty']] }} SUDOKU</div></div>
+            <div class="grid-item"></div>
+            <div class="grid-item">
+                <div class="info-container" style="justify-content: flex-end">
+                    <div class="game-status-container">
+                        <div class="info-container">
+                            <div class="timer-icon"></div>
+                            <div class="timer-counter" id="ui-text">00:00</div>
+                        </div>
+                        {% if game_data['hints'] %}
+                        <div class="info-container">
+                        {% else %}
+                        <div class="info-container" style="visibility: hidden">
+                        {% endif %}
+                            <div class="mistakes-icon"></div>
+                            <div class="mistakes-counter" id="ui-text">{{ game_data['mistakes'] }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="three-icons">
+                    <div class="pen-button" id="selected"></div>
+                    <div class="pencil-button" id="deselected"></div>
+                    <div class="eraser-button" id="deselected"></div>
+                </div>
+            </div>
+            <div class="grid-item" id="sudoku-board">
+                <div class="board-container">
+                {% for i in range(3) %}
+                    {% for j in range(3) %}
+                        <div class="grid-item" id="sudoku-quadrant">
+                            <div class="board-container">
+                                {% for x in range(3) %}
+                                    {% for y in range(3) %}
+                                        <div class="grid-item" id="sudoku-tile">
+                                            <div class="tile-border" data-tilerow="{{ 3*i+x }}" data-tilecol="{{ 3*j+y }}">
+                                                {% if game_data['initial_board'][3*i+x][3*j+y] in range(1,10) %}
+                                                    <div class="board-tile" id="initial-val-tile" data-tilerow="{{ 3*i+x }}" data-tilecol="{{ 3*j+y }}">
+                                                        {{ game_data['initial_board'][3*i+x][3*j+y] }}
+                                                    </div>
+                                                {% elif game_data['game_state'][3*i+x][3*j+y] in range(1,10) %}
+                                                    <div class="board-tile" id="" data-tilerow="{{ 3*i+x }}" data-tilecol="{{ 3*j+y }}">
+                                                        {{ game_data['game_state'][3*i+x][3*j+y] }}
+                                                    </div>
+                                                {% else %}
+                                                    <div class="board-tile" id="" data-tilerow="{{ 3*i+x }}" data-tilecol="{{ 3*j+y }}"></div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                </div>
+            </div>
+            <div class="grid-item">
+                <div class="numbers-container">
+                {% for i in range(9) %}
+                    <div class="number-button" id="hoverable-number-button">{{ (i + 1) }}</div>
+                {% endfor %}
+                </div>
+            </div>
+            <div class="grid-item"></div>
+            <div class="grid-item" id="back-button" style="padding-top: 2rem" >
+                {% if game_data['ranked'] != 'on' %}
+                    <a href="{{ url_for('save_game') }}">
+                        <button type="button" class="menu-button">SAVE & QUIT</button>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('main_menu') }}">
+                        <button type="button" class="menu-button">QUIT</button>
+                    </a>
+                {% endif %}
+            </div>
+            <div class="grid-item"></div>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title%}Login page{% endblock %}
+{% block content %}
+    <div class="menu-container">
+        <div class="logo-flex-container">
+            <div id="logo-container"></div>
+        </div>
+        <div class="menu">
+
+            <h1 class="action_title">REGISTER</h1>
+            {% if missmatch == True %}
+                <span style="color: #9C1A1C">
+            {% else %}
+                <span style="color: #9C1A1C; visibility: hidden">
+            {% endif %}
+                <br>
+                Password missmatch!
+                <br><br>
+            </span>
+            <form action="{{ url_for('register_post') }}" method="POST" class="action_form" style="text-align: center; padding-bottom: 1rem">
+                <label for="display_username">User name:</label><br>
+                <input id="display_username" name="username" required placeholder="user name" style="padding: 0.3rem"><br><br>
+
+                <label for="email">Email address: </label><br>
+                <input type="email" id="email" name="email" required placeholder="email" style="padding: 0.3rem"><br><br>
+
+                <label for="password">Password: </label><br>
+                <input type="password" id="password" name="password" required placeholder="password" style="padding: 0.3rem"><br><br>
+
+                <label for="confirm_password">Confirm password:</label><br>
+                <input type="password" id="confirm_password" name="c_password" required placeholder="password" style="padding: 0.3rem"><br><br>
+
+                <input class="menu-button" type="submit" value="REGISTER">
+            </form>
+            <a href="{{ url_for('main_menu') }}">
+                <button type="button" class="menu-button">BACK TO MENU</button>
+            </a>
+
+        </div>
+    </div>
+{% endblock %}

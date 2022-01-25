@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title%}Login page{% endblock %}
+{% block content %}
+    <div class="menu-container">
+        <div class="logo-flex-container">
+            <div id="logo-container"></div>
+        </div>
+        <div class="menu">
+
+            <h1 class="action_title">LOGIN DETAILS</h1>
+            {% if invalid == True %}
+                <span style="color: #9C1A1C">
+            {% else %}
+                <span style="color: #9C1A1C; visibility: hidden">
+            {% endif %}
+                    <br>
+                    Invalid credentials!
+                    <br><br>
+                </span>
+
+            <form action="{{ url_for('login') }}" enctype="multipart/form-data" method="POST" class="action_form" style="text-align: center; padding-bottom: 1rem">
+                <label for="email">Email address:</label><br>
+                <input type="email" id="email" name="email" placeholder="email" style="padding: 0.3rem"><br><br>
+
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password" placeholder="password" style="padding: 0.3rem"><br><br>
+
+                <label for="remember_me">Remember me:</label>
+                <input type="checkbox" id="remember_me" name="perm_session"><br><br>
+
+                <input class="menu-button" type="submit" value="LOG IN">
+            </form>
+            <a href="{{ url_for('main_menu') }}">
+                <button type="button" class="menu-button">BACK TO MENU</button>
+            </a>
+
+        </div>
+    </div>
+{% endblock %}

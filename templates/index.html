@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title%}Sudoku{% endblock %}
+{% block content %}
+    <div class="menu-container">
+        <div class="logo-flex-container">
+            <div id="logo-container"></div>
+        </div>
+        <div class="menu">
+
+        {% if not logged_in %}
+            <a href="{{ url_for('login') }}" style="padding: 1rem">
+                <button type="button" class="menu-button">LOG IN</button>
+            </a>
+            <a href="{{ url_for('register') }}" style="padding: 1rem">
+                <button type="button" class="menu-button">REGISTER</button>
+            </a>
+        {% else %}
+            <a href="{{ url_for('play') }}" style="padding: 1rem">
+                <button type="button" class="menu-button">START GAME</button>
+            </a>
+            <a href="{{ url_for('load') }}" style="padding: 1rem">
+                <button type="button" class="menu-button">LOAD GAME</button>
+            </a>
+            <a href="{{ url_for('logout') }}" style="padding: 1rem">
+                <button type="button" class="menu-button">LOG OUT</button>
+            </a>
+        {% endif %}
+            <a href="{{ url_for('high_score') }}" style="padding: 1rem">
+                <button type="button" class="menu-button">HIGH SCORES</button>
+            </a>
+            <a href="{{ url_for('about') }}" style="padding: 1rem">
+                <button type="button" class="menu-button">ABOUT</button>
+            </a>
+        </div>
+    </div>
+{% endblock %}

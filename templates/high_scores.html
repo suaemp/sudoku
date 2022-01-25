@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title%}High scores{% endblock %}
+{% block content %}
+    <div class="menu-container">
+        <div class="logo-flex-container">
+            <div id="logo-container"></div>
+        </div>
+        <div class="menu">
+        <div class="search-window-container">
+            <h1 class="action_title">HIGH SCORES</h1><br>
+
+            <h3>SEARCH BY: </h3>
+            <div class="search-window-border">
+            <table>
+                <tr>
+                    <form action="{{ url_for('high_score') }}" method="GET">
+                        <td><input id="username" type="text" name="username" style="padding: 0.1rem; font-size: 1rem;" placeholder="username"></td>
+                        <td><button type="submit" class="search-button">SEARCH</button></td>
+                    </form>
+                </tr>
+                <tr>
+                    <form action="{{ url_for('high_score') }}" method="GET">
+                        <td><input id="board_seed" type="text" name="board_seed" style="padding: 0.1rem; font-size: 1rem;" placeholder="board seed"></td>
+                        <td><button type="submit" class="search-button">SEARCH</button></td>
+                    </form>
+                </tr>
+                    {% set difficulties = ['select difficulty', 'EASY', 'MEDIUM', 'HARD', 'EXPERT', 'EVIL'] %}
+                <tr>
+                    <form action="{{ url_for('high_score')}}" method="GET">
+                    <td><select id="difficulty" name="difficulty" style="padding: 0.1rem; font-size: 1rem; width: 202px">
+                    {% for n in range(6)%}
+                        {% if difficulties[n] == selected_difficulty_filter %}
+                            <option selected label="{{ difficulties[n] }}">
+                        {% else %}
+                            <option label="{{ difficulties[n] }}">
+                        {% endif %}
+                                {{ (n + 1) }}
+                            </option>
+                    {% endfor %}
+                    </select></td>
+                    <td><button type="submit" class="search-button" style="font-size: ">FILTER</button></td>
+                    </form>
+                </tr>
+            </table>
+            </div>
+        </div>
+            <div>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>USERNAME</th>
+                        <th>DIFFICULTY (clues)</th>
+                        <th>BOARD SEED</th>
+                        <th>MISTAKES</th>
+                        <th>TIME</th>
+                    </tr>
+                    {% for score in high_scores %}
+                        <tr>
+                            <td style="min-width: 0; width: 10px">{{ loop.index }}. </td>
+                            <td>{{ score['username'] }}</td>
+                            <td>{{ score['difficulty'] }}</td>
+                            <td>{{ score['board_seed_id'] }}</td>
+                            <td>{{ score['mistakes'] }}</td>
+                            <td>{{ score['elapsed_time'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                <div style="padding-top: 1rem">
+                    <a href="{{ url_for('main_menu') }}">
+                        <button type="button" class="menu-button">BACK TO MENU</button>
+                    </a><br><br><br><br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

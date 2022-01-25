@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title%}About{% endblock %}
+{% block content %}
+    <div class="menu-container">
+        <div class="logo-flex-container">
+            <div id="logo-container"></div>
+        </div>
+        <div class="menu" style="height: 75%">
+
+            <h1 class="action_title">ABOUT M&W SUDOKU</h1><br><br>
+            <div class="about-text-style">
+                <p>
+                    This sudoku game implementation was created by Michał Rolski and Wiktoria Śladowska (M&W) as JavaScript learning excercise. Game uses postgreSQL database as backend data storage as well as Flask module for backend server.
+                </p><br><br>
+                <p>
+                    Sudoku game rules:
+                </p>
+                <div class="logo-flex-container" style="padding-top: 0">
+                    <div style="text-align: left">
+                    <ol>
+                        <li>Only use the numbers 1 to 9,</li>
+                        <li>Avoid trying to guess the solution to the puzzle,</li>
+                        <li>Only use each number once in each row, column, & grid,</li>
+                        <li>Use the process of elimination as a tactic,</li>
+                        <li>Use cross-hatching and penciling in techniques.</li>
+                        <li>Each board has only ONE possible solution!</li>
+                    </ol>
+                    </div>
+                </div>
+            </div><br><br>
+            <a href="{{ url_for('main_menu') }}" style="padding-top: 1rem">
+                <button type="button" class="menu-button">BACK TO MENU</button>
+            </a>
+        </div>
+    </div>
+{% endblock %}
