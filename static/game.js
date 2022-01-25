@@ -335,7 +335,7 @@ function removeAllEventListeners(){
     let fields = document.getElementsByClassName('tile-border')
     for (let i = 0; i < fields.length; i++) {
         let element = fields[i];
-        element.removeEventListener('click', selectFieldEventListener);;
+        element.removeEventListener('click', selectFieldEventListener);
     }
 }
 
@@ -465,33 +465,34 @@ function requestUpdateGameState(field_index) {
 
 function Timer() {
     game_data['elapsed_time'] += 1;
-    let elapsedT = game_data['elapsed_time'];
-    let timeText = ""
-    let hours = Math.floor(elapsedT / 3600);
-    let minutes = Math.floor((elapsedT - (hours * 3600)) / 60);
-    let seconds = elapsedT - (hours * 3600) - (minutes * 60);
+    document.getElementsByClassName('timer-counter')[0].innerText = timeFormat(game_data['elapsed_time']);
+}
 
+function timeFormat(elapsedT) {
+    const {hours, minutes, seconds} = timeBits(elapsedT);
+    return hoursFormat(hours) + padString(minutes) + ":" + padString(seconds);
+}
+
+function hoursFormat(hours) {
     if (hours > 0) {
-        timeText = hours.toString() + "h ";
+        return hours + 'h ';
     }
+    return '';
+}
 
-    if (minutes === 0){
-        timeText += "00:";
-    } else if (minutes < 10){
-        timeText += "0" + minutes.toString() + ":";
-    } else {
-        timeText += minutes.toString() + ":";
+function timeBits(timestamp) {
+    const hours = Math.floor(timestamp / 3600);
+    const minutes = Math.floor((timestamp - (hours * 3600)) / 60);
+    const seconds = timestamp - (hours * 3600) - (minutes * 60);
+    return {hours, minutes, seconds};
+}
+
+function padString(time) {
+    const stringTime = time.toString();
+    if (stringTime.length === 1) {
+        return '0' + stringTime;
     }
-
-    if (seconds === 0){
-        timeText += "00";
-    } else if (seconds < 10){
-        timeText += "0" + seconds.toString();
-    } else {
-        timeText += seconds.toString();
-    }
-
-    document.getElementsByClassName('timer-counter')[0].innerHTML = timeText;
+    return stringTime;
 }
 
 function populateMarkups(){
